@@ -31,11 +31,8 @@ local karContractTypeToString =
 }
 
 function Contractor:OnLoad()
-	self.xmlDoc = XmlDoc.CreateFromFile("Contractor.xml")
-	Apollo.RegisterEventHandler("ObjectiveTrackerLoaded", "OnObjectiveTrackerLoaded", self)
-	Apollo.RegisterEventHandler("ToggleContractor",        "OnToggleContractor", self)
-	Apollo.RegisterEventHandler("ToggleContractorOptions", "OnToggleContractorOptions", self)
 	Event_FireGenericEvent("OneVersion_ReportAddonInfo", self.name, unpack(self.version))
+	Apollo.RegisterEventHandler("ObjectiveTrackerLoaded", "OnObjectiveTrackerLoaded", self)
 end
 
 function Contractor:OnSave(eLevel)
@@ -78,6 +75,8 @@ end
 
 function Contractor:OnObjectiveTrackerLoaded(wndObjectiveTracker)
 	if not self.bLoaded then
+		Apollo.RegisterEventHandler("ToggleContractor",        "OnToggleContractor", self)
+		Apollo.RegisterEventHandler("ToggleContractorOptions", "OnToggleContractorOptions", self)
 
 		Event_FireGenericEvent("ObjectiveTracker_NewAddOn", {
 			["strAddon"] = self.name,
@@ -87,6 +86,7 @@ function Contractor:OnObjectiveTrackerLoaded(wndObjectiveTracker)
 			["strDefaultSort"] = "032ContractsContainer",
 		})
 
+		self.xmlDoc = XmlDoc.CreateFromFile("Contractor.xml")
 		self.wndMain = Apollo.LoadForm(self.xmlDoc, "Contractor", wndObjectiveTracker, self)
 		self.wndContainer = self.wndMain:FindChild("EpisodeGroupContainer")
 		local _,__,___,bottom = self.wndMain:GetAnchorOffsets()
